@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moves.md/schemas/block.schema.json",
+  "title": "Move Block",
+  "description": "A typed block inside a Move.",
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string", "minLength": 1 },
+    "required": { "type": "boolean" },
+    "on_response": {
+      "type": "object",
+      "description": "Proxy implementation extension for current callback behavior."
+    }
+  },
+  "allOf": [
+    { "$ref": "#/$defs/text" },
+    { "$ref": "#/$defs/image" },
+    { "$ref": "#/$defs/video" },
+    { "$ref": "#/$defs/audio" },
+    { "$ref": "#/$defs/code" },
+    { "$ref": "#/$defs/file" },
+    { "$ref": "#/$defs/data" },
+    { "$ref": "#/$defs/terminal" },
+    { "$ref": "#/$defs/copyable" },
+    { "$ref": "#/$defs/choice" },
+    { "$ref": "#/$defs/multi_choice" },
+    { "$ref": "#/$defs/freeform" },
+    { "$ref": "#/$defs/numeric" },
+    { "$ref": "#/$defs/toggle" },
+    { "$ref": "#/$defs/ranking" },
+    { "$ref": "#/$defs/confirmation" },
+    { "$ref": "#/$defs/url" },
+    { "$ref": "#/$defs/file_path" },
+    { "$ref": "#/$defs/graph_node" },
+    { "$ref": "#/$defs/location" },
+    { "$ref": "#/$defs/datetime" },
+    { "$ref": "#/$defs/person" },
+    { "$ref": "#/$defs/snippet" },
+    { "$ref": "#/$defs/excerpt" },
+    { "$ref": "#/$defs/diff" },
+    { "$ref": "#/$defs/before_after" },
+    { "$ref": "#/$defs/side_by_side" },
+    { "$ref": "#/$defs/timeline" },
+    { "$ref": "#/$defs/warning" },
+    { "$ref": "#/$defs/alert" },
+    { "$ref": "#/$defs/progress" },
+    { "$ref": "#/$defs/urgency" },
+    { "$ref": "#/$defs/expiration" },
+    { "$ref": "#/$defs/section" },
+    { "$ref": "#/$defs/executable" }
+  ],
+  "additionalProperties": true,
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["block_id", "operator", "value"],
+      "properties": {
+        "block_id": { "type": "string", "minLength": 1 },
+        "operator": { "enum": ["eq", "neq", "contains", "not_contains"] },
+        "value": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "text": {
+      "if": { "properties": { "type": { "const": "text" } }, "required": ["type"] },
+      "then": { "required": ["content"], "properties": { "content": { "type": "string" } } }
+    },
+    "image": {
+      "if": { "properties": { "type": { "const": "image" } }, "required": ["type"] },
+      "then": { "required": ["ref"], "properties": { "ref": { "type": "string" }, "caption": { "type": "string" }, "alt": { "type": "string" } } }
+    },
+    "video": {
+      "if": { "properties": { "type": { "const": "video" } }, "required": ["type"] },
+      "then": { "required": ["ref"], "properties": { "ref": { "type": "string" }, "caption": { "type": "string" } } }
+    },
+    "audio": {
+      "if": { "properties": { "type": { "const": "audio" } }, "required": ["type"] },
+      "then": { "required": ["ref"], "properties": { "ref": { "type": "string" }, "caption": { "type": "string" } } }
+    },
+    "code": {
+      "if": { "properties": { "type": { "const": "code" } }, "required": ["type"] },
+      "then": { "required": ["content"], "properties": { "content": { "type": "string" }, "language": { "type": "string" } } }
+    },
+    "file": {
+      "if": { "properties": { "type": { "const": "file" } }, "required": ["type"] },
+      "then": { "required": ["ref", "filename"], "properties": { "ref": { "type": "string" }, "filename": { "type": "string" } } }
+    },
+    "data": {
+      "if": { "properties": { "type": { "const": "data" } }, "required": ["type"] },
+      "then": {
+        "required": ["rows"],
+        "properties": {
+          "headers": { "$ref": "#/$defs/stringArray" },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "terminal": {
+      "if": { "properties": { "type": { "const": "terminal" } }, "required": ["type"] },
+      "then": { "required": ["content"], "properties": { "content": { "type": "string" } } }
+    },
+    "copyable": {
+      "if": { "properties": { "type": { "const": "copyable" } }, "required": ["type"] },
+      "then": { "required": ["content"], "properties": { "label": { "type": "string" }, "content": { "type": "string" } } }
+    },
+    "choice": {
+      "if": { "properties": { "type": { "const": "choice" } }, "required": ["type"] },
+      "then": { "required": ["question", "options"], "properties": { "question": { "type": "string" }, "options": { "$ref": "#/$defs/stringArray" }, "default_option": { "type": "integer" } } }
+    },
+    "multi_choice": {
+      "if": { "properties": { "type": { "const": "multi_choice" } }, "required": ["type"] },
+      "then": { "required": ["question", "options"], "properties": { "question": { "type": "string" }, "options": { "$ref": "#/$defs/stringArray" }, "default_options": { "type": "array", "items": { "type": "integer" } } } }
+    },
+    "freeform": {
+      "if": { "properties": { "type": { "const": "freeform" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "placeholder": { "type": "string" } } }
+    },
+    "numeric": {
+      "if": { "properties": { "type": { "const": "numeric" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "min": { "type": "number" }, "max": { "type": "number" }, "step": { "type": "number" } } }
+    },
+    "toggle": {
+      "if": { "properties": { "type": { "const": "toggle" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "default_value": { "type": "boolean" } } }
+    },
+    "ranking": {
+      "if": { "properties": { "type": { "const": "ranking" } }, "required": ["type"] },
+      "then": { "required": ["question", "items"], "properties": { "question": { "type": "string" }, "items": { "$ref": "#/$defs/stringArray" } } }
+    },
+    "confirmation": {
+      "if": { "properties": { "type": { "const": "confirmation" } }, "required": ["type"] },
+      "then": { "required": ["message"], "properties": { "message": { "type": "string" }, "confirm_label": { "type": "string" }, "cancel_label": { "type": "string" } } }
+    },
+    "url": {
+      "if": { "properties": { "type": { "const": "url" } }, "required": ["type"] },
+      "then": { "required": ["href"], "properties": { "href": { "type": "string" }, "label": { "type": "string" }, "description": { "type": "string" } } }
+    },
+    "file_path": {
+      "if": { "properties": { "type": { "const": "file_path" } }, "required": ["type"] },
+      "then": { "required": ["path"], "properties": { "path": { "type": "string" }, "exists": { "type": "boolean" } } }
+    },
+    "graph_node": {
+      "if": { "properties": { "type": { "const": "graph_node" } }, "required": ["type"] },
+      "then": { "required": ["node_type", "node_id"], "properties": { "node_type": { "type": "string" }, "node_id": { "type": "string" } } }
+    },
+    "location": {
+      "if": { "properties": { "type": { "const": "location" } }, "required": ["type"] },
+      "then": { "required": ["lat", "lng"], "properties": { "lat": { "type": "number" }, "lng": { "type": "number" }, "label": { "type": "string" } } }
+    },
+    "datetime": {
+      "if": { "properties": { "type": { "const": "datetime" } }, "required": ["type"] },
+      "then": { "required": ["iso"], "properties": { "iso": { "type": "string" }, "label": { "type": "string" } } }
+    },
+    "person": {
+      "if": { "properties": { "type": { "const": "person" } }, "required": ["type"] },
+      "then": { "required": ["name"], "properties": { "name": { "type": "string" }, "role": { "type": "string" }, "avatar": { "type": "string" } } }
+    },
+    "snippet": {
+      "if": { "properties": { "type": { "const": "snippet" } }, "required": ["type"] },
+      "then": { "required": ["path", "content"], "properties": { "path": { "type": "string" }, "content": { "type": "string" }, "start_line": { "type": "integer" }, "end_line": { "type": "integer" }, "language": { "type": "string" }, "highlights": { "type": "array" } } }
+    },
+    "excerpt": {
+      "if": { "properties": { "type": { "const": "excerpt" } }, "required": ["type"] },
+      "then": { "required": ["content", "source"], "properties": { "content": { "type": "string" }, "source": { "type": "string" }, "source_url": { "type": "string" }, "highlights": { "type": "array" } } }
+    },
+    "diff": {
+      "if": { "properties": { "type": { "const": "diff" } }, "required": ["type"] },
+      "then": { "required": ["before", "after"], "properties": { "before": { "type": "string" }, "after": { "type": "string" }, "filename": { "type": "string" }, "language": { "type": "string" } } }
+    },
+    "before_after": {
+      "if": { "properties": { "type": { "const": "before_after" } }, "required": ["type"] },
+      "then": { "required": ["before", "after"], "properties": { "before": { "type": "string" }, "after": { "type": "string" }, "label": { "type": "string" } } }
+    },
+    "side_by_side": {
+      "if": { "properties": { "type": { "const": "side_by_side" } }, "required": ["type"] },
+      "then": { "required": ["left", "right"], "properties": { "left": { "type": "string" }, "right": { "type": "string" }, "left_label": { "type": "string" }, "right_label": { "type": "string" } } }
+    },
+    "timeline": {
+      "if": { "properties": { "type": { "const": "timeline" } }, "required": ["type"] },
+      "then": { "required": ["events"], "properties": { "events": { "type": "array" } } }
+    },
+    "warning": {
+      "if": { "properties": { "type": { "const": "warning" } }, "required": ["type"] },
+      "then": { "required": ["message"], "properties": { "message": { "type": "string" } } }
+    },
+    "alert": {
+      "if": { "properties": { "type": { "const": "alert" } }, "required": ["type"] },
+      "then": { "required": ["message"], "properties": { "message": { "type": "string" }, "severity": { "type": "string" } } }
+    },
+    "progress": {
+      "if": { "properties": { "type": { "const": "progress" } }, "required": ["type"] },
+      "then": { "required": ["value"], "properties": { "value": { "type": "number" }, "max": { "type": "number" }, "label": { "type": "string" } } }
+    },
+    "urgency": {
+      "if": { "properties": { "type": { "const": "urgency" } }, "required": ["type"] },
+      "then": { "required": ["level"], "properties": { "level": { "type": "string" }, "message": { "type": "string" } } }
+    },
+    "expiration": {
+      "if": { "properties": { "type": { "const": "expiration" } }, "required": ["type"] },
+      "then": { "required": ["expires_at"], "properties": { "expires_at": { "type": "string" }, "message": { "type": "string" } } }
+    },
+    "section": {
+      "if": { "properties": { "type": { "const": "section" } }, "required": ["type"] },
+      "then": {
+        "required": ["children", "label"],
+        "properties": {
+          "children": { "type": "array", "items": { "$ref": "https://moves.md/schemas/block.schema.json" } },
+          "label": { "type": "string" },
+          "collapsible": { "type": "boolean" },
+          "collapsed": { "type": "boolean" },
+          "condition": { "$ref": "#/$defs/condition" }
+        }
+      }
+    },
+    "executable": {
+      "if": { "properties": { "type": { "const": "executable" } }, "required": ["type"] },
+      "then": {
+        "required": ["label"],
+        "properties": {
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "command": { "type": "string" },
+          "condition": { "type": "string" },
+          "shell": { "type": "string" },
+          "working_directory": { "type": "string" },
+          "timeout_seconds": { "type": "integer", "minimum": 1, "maximum": 600 },
+          "strategy": { "enum": ["sequence", "parallel"] },
+          "approve_children": { "enum": ["auto", "yes", "no"] },
+          "children": { "type": "array", "items": { "$ref": "https://moves.md/schemas/block.schema.json" } }
+        },
+        "not": {
+          "required": ["command", "children"]
+        }
+      }
+    }
+  }
+}

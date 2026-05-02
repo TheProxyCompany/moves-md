@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moves.md/schemas/discovery.schema.json",
+  "title": "Move Protocol Discovery",
+  "description": "Discovery document for a Move Protocol HTTP server.",
+  "type": "object",
+  "required": ["protocol", "current_version", "versions", "endpoints"],
+  "properties": {
+    "protocol": {
+      "const": "moves"
+    },
+    "current_version": {
+      "type": "string"
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "endpoints": {
+      "type": "object",
+      "required": ["moves"],
+      "properties": {
+        "moves": {
+          "type": "string"
+        },
+        "events": {
+          "type": "string"
+        },
+        "event_stream": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    }
+  },
+  "additionalProperties": true
+}

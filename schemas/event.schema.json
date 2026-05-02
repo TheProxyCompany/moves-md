@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moves.md/schemas/event.schema.json",
+  "title": "Move Event",
+  "description": "A wake signal that something happened to a Move.",
+  "type": "object",
+  "required": ["type", "move_id", "source"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Event type, such as move.resolved."
+    },
+    "move_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque return address copied from the Move."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": true
+}

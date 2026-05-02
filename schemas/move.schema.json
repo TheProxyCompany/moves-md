@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moves.md/schemas/move.schema.json",
+  "title": "Move",
+  "description": "A durable artifact asking for human judgment.",
+  "type": "object",
+  "required": ["id", "source", "status", "title", "lede", "context", "blocks", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque return address supplied by the Move creator."
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current Move state. Receivers must tolerate unknown values."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lede": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context": {
+      "type": "string"
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "$ref": "https://moves.md/schemas/block.schema.json"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "made_by": {
+      "type": "string"
+    },
+    "made_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "response": {
+      "type": ["object", "array", "string", "number", "boolean", "null"]
+    },
+    "resolve_label": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

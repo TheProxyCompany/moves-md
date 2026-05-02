@@ -1,0 +1,22 @@
+{
+  "name": "moves-md-spec",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.28.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.3",
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/node": "^25.4.0",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

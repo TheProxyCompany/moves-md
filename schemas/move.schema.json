@@ -50,9 +50,6 @@
     },
     "response": {
       "type": ["object", "array", "string", "number", "boolean", "null"]
-    },
-    "resolve_label": {
-      "type": "string"
     }
   },
   "additionalProperties": true

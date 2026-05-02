@@ -22,7 +22,7 @@
     ]
   },
   "event": {
-    "type": "move.resolved",
+    "type": "move.made",
     "move_id": "move_123",
     "source": "source_abc",
     "created_at": "2026-05-02T18:04:00Z"

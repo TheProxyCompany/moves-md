@@ -26,7 +26,7 @@ Returns the protocol version and endpoint paths.
     "events.sse": true,
     "events.replay": false,
     "moves.create": true,
-    "moves.resolve": true
+    "moves.made": true
   }
 }
 ```
@@ -51,8 +51,8 @@ Accept: text/event-stream
 Sends Server-Sent Events.
 
 ```text
-event: move.resolved
-data: {"type":"move.resolved","move_id":"move_123","source":"source_abc"}
+event: move.made
+data: {"type":"move.made","move_id":"move_123","source":"source_abc"}
 ```
 
 The SSE `event:` name should match the Event object's `type`.

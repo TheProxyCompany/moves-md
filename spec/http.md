@@ -52,7 +52,7 @@ Sends Server-Sent Events.
 
 ```text
 event: move.resolved
-data: {"type":"move.resolved","move_id":"move_123","source":"proxy.party:party_abc"}
+data: {"type":"move.resolved","move_id":"move_123","source":"source_abc"}
 ```
 
 The SSE `event:` name should match the Event object's `type`.

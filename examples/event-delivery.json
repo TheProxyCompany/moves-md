@@ -1,7 +1,7 @@
 {
   "move": {
     "id": "move_123",
-    "source": "proxy.party:party_abc",
+    "source": "source_abc",
     "status": "pending",
     "title": "Approve the benchmark bundle",
     "lede": "The agents prepared the comparison and need your call.",
@@ -24,13 +24,13 @@
   "event": {
     "type": "move.resolved",
     "move_id": "move_123",
-    "source": "proxy.party:party_abc",
+    "source": "source_abc",
     "created_at": "2026-05-02T18:04:00Z"
   },
   "listener": [
     "receive event",
     "recognize source",
     "fetch move by move_id",
-    "continue work from current move state"
+    "continue from current move state"
   ]
 }

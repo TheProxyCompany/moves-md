@@ -8,11 +8,7 @@
   "properties": {
     "id": { "type": "string" },
     "type": { "type": "string", "minLength": 1 },
-    "required": { "type": "boolean" },
-    "on_response": {
-      "type": "object",
-      "description": "Proxy implementation extension for current callback behavior."
-    }
+    "required": { "type": "boolean" }
   },
   "allOf": [
     { "$ref": "#/$defs/text" },
@@ -31,6 +27,12 @@
     { "$ref": "#/$defs/toggle" },
     { "$ref": "#/$defs/ranking" },
     { "$ref": "#/$defs/confirmation" },
+    { "$ref": "#/$defs/date" },
+    { "$ref": "#/$defs/file_upload" },
+    { "$ref": "#/$defs/color" },
+    { "$ref": "#/$defs/secret" },
+    { "$ref": "#/$defs/rating" },
+    { "$ref": "#/$defs/native_view" },
     { "$ref": "#/$defs/url" },
     { "$ref": "#/$defs/file_path" },
     { "$ref": "#/$defs/graph_node" },
@@ -142,6 +144,30 @@
     "confirmation": {
       "if": { "properties": { "type": { "const": "confirmation" } }, "required": ["type"] },
       "then": { "required": ["message"], "properties": { "message": { "type": "string" }, "confirm_label": { "type": "string" }, "cancel_label": { "type": "string" } } }
+    },
+    "date": {
+      "if": { "properties": { "type": { "const": "date" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "default_value": { "type": "string" }, "min_date": { "type": "string" }, "max_date": { "type": "string" } } }
+    },
+    "file_upload": {
+      "if": { "properties": { "type": { "const": "file_upload" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "accept": { "$ref": "#/$defs/stringArray" } } }
+    },
+    "color": {
+      "if": { "properties": { "type": { "const": "color" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "default_value": { "type": "string" } } }
+    },
+    "secret": {
+      "if": { "properties": { "type": { "const": "secret" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "placeholder": { "type": "string" } } }
+    },
+    "rating": {
+      "if": { "properties": { "type": { "const": "rating" } }, "required": ["type"] },
+      "then": { "required": ["question"], "properties": { "question": { "type": "string" }, "max": { "type": "integer" }, "default_option": { "type": "integer" } } }
+    },
+    "native_view": {
+      "if": { "properties": { "type": { "const": "native_view" } }, "required": ["type"] },
+      "then": { "required": ["id"], "properties": { "id": { "type": "string", "minLength": 1 } } }
     },
     "url": {
       "if": { "properties": { "type": { "const": "url" } }, "required": ["type"] },

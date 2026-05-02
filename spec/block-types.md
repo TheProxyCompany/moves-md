@@ -4,13 +4,6 @@ Status: draft.
 
 This document is the source of truth for Move block types in the public Move Protocol draft.
 
-The initial catalog is grounded in Grand Central's current block validator:
-
-- `grand-central/src/mcp/server/validation/blocks.rs`
-- `grand-central/src/mcp/server/validation/type_checks.rs`
-
-Proxy's Swift renderer currently recognizes additional local UI blocks. Those are listed separately as implementation extensions.
-
 ## Block Shape
 
 Every block must be a JSON object with a `type` string.
@@ -24,7 +17,6 @@ Any block may include:
 | `id` | Stable block id. Required when response data needs to refer to this block. |
 | `type` | Block type. Required. |
 | `required` | Boolean marker for human input requirements. |
-| `on_response` | Proxy implementation detail for current callback behavior. Not part of the public wake-signal loop. |
 
 Receivers must ignore unknown fields.
 
@@ -60,6 +52,12 @@ Validation rules:
 | `toggle` | `question` | `default_value` |
 | `ranking` | `question`, `items` |  |
 | `confirmation` | `message` | `confirm_label`, `cancel_label` |
+| `date` | `question` | `default_value`, `min_date`, `max_date` |
+| `file_upload` | `question` | `accept` |
+| `color` | `question` | `default_value` |
+| `secret` | `question` | `placeholder` |
+| `rating` | `question` | `max`, `default_option` |
+| `native_view` | `id` |  |
 
 Validation rules:
 
@@ -69,6 +67,8 @@ Validation rules:
 - `numeric.min`, `numeric.max`, and `numeric.step` must be numbers when present.
 - `toggle.default_value` must be a boolean when present.
 - `ranking.items` must be an array of strings.
+- `file_upload.accept`, when present, must be an array of strings.
+- `rating.max` and `rating.default_option`, when present, must be integers.
 
 ## Reference Blocks
 
@@ -127,21 +127,6 @@ Validation rules:
 - `executable.strategy` is allowed only when `children` is present and must be `sequence` or `parallel`.
 - `executable.approve_children` is allowed only when `children` is present and must be `auto`, `yes`, or `no`.
 - `executable.children` must be an array of blocks when present.
-
-## Proxy UI Extensions
-
-Proxy's Swift `MoveBlock` model currently recognizes these extra block types:
-
-| Type | Required fields | Optional fields |
-| --- | --- | --- |
-| `date` | `question` | `default_value`, `min_date`, `max_date` |
-| `file_upload` | `question` | `accept` |
-| `color` | `question` | `default_value` |
-| `secret` | `question` | `placeholder` |
-| `rating` | `question` | `max`, `default_option` |
-| `native_view` | `id` |  |
-
-These are not yet validated as first-class Grand Central block types. Until Grand Central validation is updated, they should be treated as Proxy implementation extensions rather than protocol core.
 
 ## Unknown Blocks
 

@@ -1,12 +1,8 @@
 # MOVES.md
 
-MOVES.md is the protocol for closing the loop between human judgment and autonomous work.
+MOVES.md is a protocol for human approval of agent-proposed work.
 
-Agents and systems produce Moves when they need a human decision. A human acts on the Move. That action emits an Event. A Listener receives the Event, fetches the Move, and routes it back into the system that owns the Move's source.
-
-```text
-Agents -> Move -> Human -> Event -> Listener -> Agents -> Move
-```
+Systems produce Moves when they need a human decision. A human acts on a Move. That action emits an Event. A Listener receives the Event, fetches the Move, and continues from the Move's current state.
 
 ## Protocol
 
@@ -24,8 +20,6 @@ The protocol has four public concepts:
 - `Listener`: software that receives Events, fetches Moves, and continues work.
 - `Source`: an opaque return address supplied by the Move creator.
 
-Entries, parties, timelines, and execution logs are implementation details. A product can use them internally, but they are not part of the public Move Protocol.
-
 ## Schemas
 
 - [schemas/move.schema.json](schemas/move.schema.json)
@@ -35,7 +29,7 @@ Entries, parties, timelines, and execution logs are implementation details. A pr
 
 ## Examples
 
-- [examples/basic-loop.json](examples/basic-loop.json)
+- [examples/event-delivery.json](examples/event-delivery.json)
 - [examples/sse-event.txt](examples/sse-event.txt)
 
 ## Site

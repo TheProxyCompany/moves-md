@@ -93,11 +93,13 @@ nav,
 
 nav a,
 .filters button {
+  flex: 0 0 auto;
   border: 1px solid rgba(2, 70, 69, 0.2);
   border-radius: 999px;
   background: rgba(244, 240, 223, 0.42);
   color: rgba(2, 70, 69, 0.72);
   padding: 0 14px;
+  white-space: nowrap;
 }
 
 nav a.active,

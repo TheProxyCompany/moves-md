@@ -2,7 +2,19 @@
 
 MOVES.md is a protocol for human approval of agent-proposed work.
 
-Systems produce Moves when they need a human decision. A human acts on a Move. That action emits an Event. A Listener receives the Event, fetches the Move, and continues from the Move's current state.
+Systems produce Moves when they need a human decision. A human acts on a Move. That action emits an Event. A Listener receives the Event and decides how to continue.
+
+## MVP Flow
+
+The immediate MVP is closing the loop inside Proxy:
+
+1. An agent proposes a Move.
+2. The human makes the Move.
+3. Proxy emits `move.made`.
+4. A Listener routes the Event by `source`.
+5. The proposing agent is notified and continues from the human's decision.
+
+The Move owns the human decision boundary. It does not own the downstream work after the decision.
 
 ## Protocol
 
@@ -17,7 +29,7 @@ The protocol has four public concepts:
 
 - `Move`: a durable artifact asking for human judgment.
 - `Event`: a small wake signal that something happened to a Move.
-- `Listener`: software that receives Events, fetches Moves, and continues work.
+- `Listener`: software that receives Events and decides how to continue.
 - `Source`: an opaque return address supplied by the Move creator.
 
 ## Schemas

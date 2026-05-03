@@ -2,22 +2,22 @@
   "move": {
     "id": "move_123",
     "source": "source_abc",
-    "status": "pending",
-    "title": "Approve the benchmark bundle",
-    "lede": "The agents prepared the comparison and need your call.",
-    "context": "The bundle includes raw logs, a summary table, and a proposed follow-up.",
+    "status": "proposed",
+    "title": "Choose the invoice follow-up",
+    "lede": "Acme is 14 days overdue and has not replied to the first reminder. The next message should either preserve the relationship or apply firmer pressure.",
+    "context": "Acme usually pays within a week. The account is worth $48k annually, and their champion is on parental leave until June. Finance wants the invoice cleared this month.",
     "created_at": "2026-05-02T18:00:00Z",
     "blocks": [
       {
-        "id": "summary",
+        "id": "recommendation",
         "type": "text",
-        "content": "The benchmark run completed. The remaining question is whether this bundle is ready to send."
+        "content": "Recommended path: send a relationship-preserving reminder to the finance alias, CC the interim sponsor, and set a Friday follow-up."
       },
       {
         "type": "choice",
         "id": "decision",
         "question": "What should happen next?",
-        "options": ["Send it", "Revise it", "Hold"]
+        "options": ["Send the softer reminder", "Send the firmer reminder", "Hold until Monday"]
       }
     ]
   },
@@ -30,7 +30,6 @@
   "listener": [
     "receive event",
     "recognize source",
-    "fetch move by move_id",
-    "continue from current move state"
+    "decide whether and how to continue"
   ]
 }

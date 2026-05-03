@@ -39,7 +39,7 @@ GET /moves/:id
 
 Returns the current Move object.
 
-Listeners must call this after receiving an Event. Events are not source-of-truth state.
+Listeners may call this after receiving an Event when they need the current Move object.
 
 ## Event Stream
 

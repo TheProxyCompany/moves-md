@@ -210,11 +210,11 @@ const categoryNames: Record<BlockCategory, string> = {
 const protocolReasons = [
   {
     title: "One object per ask",
-    body: "A Move isolates the agent's request from the conversation around it: the claim, the evidence, the possible responses, and the action that follows.",
+    body: "A Move isolates the agent's request from the conversation around it: the ask, the evidence, the available controls, and the human's response.",
   },
   {
     title: "Human authority stays explicit",
-    body: "The human does not have to answer in prose and hope the agent interprets it. The Move gives them a control surface to touch, tune, order, approve, or reject.",
+    body: "The human does not have to answer in prose and hope the agent interprets it. The Move gives them a control surface for the decision in front of them.",
   },
   {
     title: "The UI comes from the blocks",
@@ -222,7 +222,7 @@ const protocolReasons = [
   },
   {
     title: "Agents can resume from it",
-    body: "A response is structured enough for another process to continue the job without scraping prose or guessing what the human meant.",
+    body: "A response is structured enough for another process to continue without scraping a chat transcript or guessing what the human meant.",
   },
   {
     title: "Systems can interoperate",
@@ -365,30 +365,47 @@ function SiteHeader({ activePage, navigatePage, navigate }: NavHandlers & { acti
 }
 
 const moveExample = `{
-  "id": "review-spec-link",
-  "title": "Review the specification",
-  "lede": "The agent found the contract source.",
-  "context": "Confirm this is the right reference before implementation continues.",
+  "id": "move_123",
+  "source": "source_abc",
+  "status": "proposed",
+  "title": "Choose the invoice follow-up",
+  "lede": "Acme is 14 days overdue and has not replied to the first reminder. The next message should either preserve the relationship or apply firmer pressure.",
+  "context": "Acme usually pays within a week. The account is worth $48k annually, and their champion is on parental leave until June. Finance wants the invoice cleared this month.",
+  "created_at": "2026-05-02T18:00:00Z",
   "blocks": [
     {
+      "id": "recommendation",
       "type": "text",
-      "content": "Use this specification for Move envelopes and block fields."
+      "content": "Recommended path: send a relationship-preserving reminder to the finance alias, CC the interim sponsor, and set a Friday follow-up."
     },
     {
-      "type": "url",
-      "href": "https://moves.md/specification",
-      "label": "MOVES.md specification"
+      "id": "decision",
+      "type": "choice",
+      "question": "What should happen next?",
+      "options": ["Send the softer reminder", "Send the firmer reminder", "Hold until Monday"]
     }
   ]
 }`;
 
+const eventExample = `{
+  "type": "move.made",
+  "move_id": "move_123",
+  "source": "source_abc",
+  "created_at": "2026-05-02T18:04:00Z"
+}`;
+
 const envelopeFields = [
   ["id", "Unique Move id supplied by the agent."],
+  ["source", "Opaque return address supplied by the Move creator."],
+  ["status", "Current Move state. The draft does not define status values."],
   ["title", "Short human-readable headline."],
   ["lede", "One or two sentences that state the ask."],
   ["context", "Background needed to make the decision."],
-  ["blocks", "Array of typed blocks. The current MCP boundary accepts this as a JSON string."],
-  ["link_to", "Optional node id to attach the Move to existing work."],
+  ["blocks", "Ordered array of typed blocks."],
+  ["created_at", "ISO 8601 creation timestamp."],
+  ["made_by", "Actor that acted on the Move."],
+  ["made_at", "ISO 8601 timestamp for the human action."],
+  ["response", "Structured human input keyed by block id."],
 ];
 
 const referenceBlocks = [
@@ -404,6 +421,13 @@ const referenceBlocks = [
   ["diff", "before, after", "A focused code or text comparison."],
 ];
 
+const schemaLinks = [
+  ["Move schema", "/schemas/move.schema.json"],
+  ["Block schema", "/schemas/block.schema.json"],
+  ["Event schema", "/schemas/event.schema.json"],
+  ["Discovery schema", "/schemas/discovery.schema.json"],
+];
+
 function SpecificationPage({ navigatePage, navigate }: NavHandlers) {
   return (
     <main>
@@ -412,30 +436,29 @@ function SpecificationPage({ navigatePage, navigate }: NavHandlers) {
         <p className="caption">Specification</p>
         <h1>Specification</h1>
         <p className="doc-lede">
-          MOVES.md defines the portable object an agent uses to ask a human for a decision. A Move
-          contains the ask, the evidence, the controls, and the resulting response.
+          MOVES.md defines the object an agent uses to ask a human for a decision. The event and
+          listener pieces close the loop after the human acts.
         </p>
 
         <section>
-          <h2>Core model</h2>
+          <h2>Move</h2>
           <p>
-            A Move is a durable proposal. It can be rendered by a product, answered by a human, and
-            resumed by an agent without scraping a chat transcript.
+            A Move is a durable artifact asking for human judgment. It packages the ask, the
+            relevant context, the evidence, and the controls into a shape a product can render.
           </p>
           <ul>
-            <li><strong>Envelope:</strong> identity, title, lede, context, status, blocks, response, and callbacks.</li>
+            <li><strong>Envelope:</strong> identity, title, lede, context, status, blocks, and response.</li>
             <li><strong>Blocks:</strong> typed pieces of evidence, controls, references, changes, and signals.</li>
             <li><strong>Responses:</strong> structured human input keyed by block id.</li>
-            <li><strong>Callbacks:</strong> immediate, deferred, or resolve-time hooks that resume work.</li>
           </ul>
         </section>
 
         <section>
-          <h2>Lifecycle</h2>
+          <h2>Event and listener</h2>
           <p>
-            Moves begin as pending proposals. They can be made, rejected, deferred, or resolved by
-            structured responses. Resolved Moves remain readable as records of what was asked and
-            what the human chose.
+            When a human makes a Move, the system can emit `move.made`. A Listener receives the
+            Event, recognizes what it cares about, and decides how to continue. The Event is a wake
+            signal, not the full state of the Move.
           </p>
         </section>
 
@@ -460,13 +483,31 @@ function ReferencePage({ navigatePage, navigate }: NavHandlers) {
         <p className="caption">Reference</p>
         <h1>Reference</h1>
         <p className="doc-lede">
-          Copy the create payload, then swap in the blocks your decision needs. The example starts
-          with the two simplest blocks: text for context and url for the source of truth.
+          Start from the object shape, then use the schemas for the exact field contract.
         </p>
 
         <section>
-          <h2>Create payload</h2>
+          <h2>Move object</h2>
           <pre><code>{moveExample}</code></pre>
+        </section>
+
+        <section>
+          <h2>Event object</h2>
+          <pre><code>{eventExample}</code></pre>
+        </section>
+
+        <section>
+          <h2>Schemas</h2>
+          <div className="reference-table compact">
+            {schemaLinks.map(([label, href]) => (
+              <div key={href}>
+                <code>{label}</code>
+                <span>
+                  <a href={href}>{href}</a>
+                </span>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section>
@@ -607,12 +648,12 @@ export default function App() {
             <p>
               Agents are getting good at doing work between messages. The missing primitive is not
               more chat. It is a portable decision object: one bounded proposal that a human can
-              inspect, answer, defer, reject, or approve.
+              inspect and answer.
             </p>
             <p>
               MOVES.md defines that object. It gives agents a common way to present evidence and
-              gives products a common way to render the ask, record the answer, and resume
-              execution.
+              gives products a common way to render the ask, record the answer, and notify the
+              right system when the human has acted.
             </p>
             <div className="markdown-note">
               <h3>Why .md?</h3>
@@ -681,8 +722,7 @@ export default function App() {
             <h2>The full specification defines the contract.</h2>
             <p>
               The overview is deliberately selective. The specification is the source of truth for
-              the complete Move object, the block schema, response handling, and how decisions
-              resume delegated work.
+              the Move object, block schema, response shape, Event object, and listener semantics.
             </p>
             <div className="spec-actions">
               <a href="/specification" onClick={(event) => navigatePage(event, "specification")}>
@@ -706,13 +746,13 @@ export default function App() {
           </div>
           <div>
             <span>2</span>
-            <h3>Human decides</h3>
-            <p>The Move collects a choice, note, approval, ranking, or deferral.</p>
+            <h3>Human makes</h3>
+            <p>The Move records the human's response without turning the whole exchange into chat.</p>
           </div>
           <div>
             <span>3</span>
-            <h3>Work resumes</h3>
-            <p>The recorded response routes back into the system and execution continues.</p>
+            <h3>Listener wakes</h3>
+            <p>A `move.made` Event gives interested systems a small signal to continue.</p>
           </div>
         </div>
       </section>
